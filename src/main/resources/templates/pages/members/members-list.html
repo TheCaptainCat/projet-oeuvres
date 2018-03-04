@@ -4,5 +4,23 @@
       layout:decorator="layout"
       th:with="title='Liste des adhérents'">
 <th:block layout:fragment="content">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th>Numéro</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Ville</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="member : ${members}">
+            <td th:text="${member.getId()}"></td>
+            <td th:text="${member.getName()}"></td>
+            <td th:text="${member.getFirstname()}"></td>
+            <td th:text="${member.getCity()}"></td>
+        </tr>
+        </tbody>
+    </table>
 </th:block>
 </html>

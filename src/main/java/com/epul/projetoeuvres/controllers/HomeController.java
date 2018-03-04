@@ -1,4 +1,4 @@
-package com.epul.projetoeuvres.controller;
+package com.epul.projetoeuvres.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
