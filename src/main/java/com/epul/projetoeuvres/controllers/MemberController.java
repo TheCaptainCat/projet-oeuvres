@@ -1,6 +1,6 @@
 package com.epul.projetoeuvres.controllers;
 
-import com.epul.projetoeuvres.models.Member;
+import com.epul.projetoeuvres.persistence.Service;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MemberController {
     @RequestMapping("/members")
     public String greeting(Model model) {
-        model.addAttribute("members", Member.queryMembers());
+        model.addAttribute("members", new Service().consulterListeAdherents());
         return "pages/members/members-list";
     }
 }
