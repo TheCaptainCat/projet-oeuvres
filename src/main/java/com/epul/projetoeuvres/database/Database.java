@@ -15,7 +15,7 @@ public class Database {
             sql = DriverManager.getConnection(
                     String.format("jdbc:%s://%s/%s?characterEncoding=UTF-8&useSSL=%s", "mysql",
                             "localhost", "baseoeuvre", true),
-                    "epul", "epul");
+                    "userepul", "epul");
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             System.exit(0);
