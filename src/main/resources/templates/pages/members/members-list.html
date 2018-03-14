@@ -15,10 +15,10 @@
         </thead>
         <tbody>
         <tr th:each="member : ${members}">
-            <td th:text="${member.getId()}"></td>
-            <td th:text="${member.getName()}"></td>
-            <td th:text="${member.getFirstname()}"></td>
-            <td th:text="${member.getCity()}"></td>
+            <td th:text="${member.getIdAdherent()}"></td>
+            <td th:text="${member.getNomAdherent()}"></td>
+            <td th:text="${member.getPrenomAdherent()}"></td>
+            <td th:text="${member.getVilleAdherent()}"></td>
         </tr>
         </tbody>
     </table>

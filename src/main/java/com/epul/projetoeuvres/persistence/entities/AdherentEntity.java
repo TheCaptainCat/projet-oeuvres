@@ -11,6 +11,15 @@ public class AdherentEntity {
     private String prenomAdherent;
     private String villeAdherent;
 
+    public AdherentEntity() {
+    }
+
+    public AdherentEntity(String nomAdherent, String prenomAdherent, String villeAdherent) {
+        this.nomAdherent = nomAdherent;
+        this.prenomAdherent = prenomAdherent;
+        this.villeAdherent = villeAdherent;
+    }
+
     @Id
     @Column(name = "id_adherent")
     public int getIdAdherent() {
