@@ -34,8 +34,13 @@
 					<td>${item.nomAdherent}</td>
 					<td>${item.prenomAdherent}</td>
 					<td>${item.villeAdherent}</td>
-					<td><a class="btn btn-info" href="#" role="button"><span class="glyphicon glyphicon-pencil"></span>Modifier</a>
-					<a class="btn btn-danger" href="supprimerAdherent.htm?id=${item.idAdherent}" role="button"><span class="glyphicon glyphicon-remove-circle"></span>Supprimer</a></td>
+					<td>
+                        <form action="supprimerAdherent.htm" method="post">
+                            <a class="btn btn-info" href="#" role="button"><span class="glyphicon glyphicon-pencil"></span>Modifier</a>
+                            <input type="hidden" name="id" value="${item.idAdherent}"/>
+                            <button type="submit" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-remove-circle"></span>Supprimer</button>
+                        </form>
+                    </td>
 				</tr>
 			</c:forEach>
 		</table>

@@ -24,13 +24,11 @@ public class Service extends EntityService{
 		}
 		catch (RuntimeException e)
 		{
-			new MonException("Erreur de lecture", e.getMessage());
+			throw(new MonException("Erreur de lecture", e.getMessage()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
-
 
 	/* Lister les adherents
 	 * */
@@ -56,13 +54,11 @@ public class Service extends EntityService{
 	*/
 	public AdherentEntity adherentById(int numero) throws MonException {
 		List<AdherentEntity> adherents = null;
-		AdherentEntity adherent = new AdherentEntity();
 		try {
 			EntityTransaction transac = startTransaction();
 			transac.begin();
 
-			adherents = (List<AdherentEntity>)entitymanager.createQuery("SELECT a FROM AdherentEntity a WHERE a.idAndherent="+numero).getResultList();
-			adherent = adherents.get(0);
+			adherents = (List<AdherentEntity>)entitymanager.createQuery("SELECT a FROM AdherentEntity a WHERE a.idAdherent = " + numero).getResultList();
 			entitymanager.close();
 		}catch (RuntimeException e)
 		{
@@ -70,9 +66,22 @@ public class Service extends EntityService{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return adherent;
+		return adherents.get(0);
 	}
 
-
+    public void deleteAdherent(int numero) throws MonException {
+        try {
+            EntityTransaction transac = startTransaction();
+            transac.begin();
+            entitymanager.createQuery("DELETE FROM AdherentEntity a WHERE a.idAdherent = " + numero).executeUpdate();
+            transac.commit();
+            entitymanager.close();
+        }catch (RuntimeException e)
+        {
+            new MonException("Erreur de lecture", e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

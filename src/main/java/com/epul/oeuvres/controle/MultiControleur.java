@@ -28,7 +28,7 @@ import com.epul.oeuvres.metier.*;
 
 
 import org.springframework.ui.Model;
-
+import org.springframework.web.servlet.view.RedirectView;
 
 
 import java.util.*;
@@ -77,19 +77,18 @@ public class MultiControleur {
 		return new ModelAndView(destinationPage);
 	}
 
-	@RequestMapping(value = "supprimerAdherent.htm", method = RequestMethod.GET)
-	public ModelAndView supprimerAdherent(HttpServletRequest request, HttpServletResponse response, @RequestParam("id") int getId) throws Exception {
+	@RequestMapping(value = "supprimerAdherent.htm", method = RequestMethod.POST)
+	public RedirectView supprimerAdherent(HttpServletRequest request, HttpServletResponse response, @RequestParam("id") int id) throws Exception {
 
-		String destinationPage = "";
-		System.out.println(getId);
+	    AdherentEntity adherent = null;
 		try {
-			AdherentEntity unAdherent = new AdherentEntity();
+		    Service service = new Service();
+			service.deleteAdherent(id);
 		} catch (Exception e) {
 			request.setAttribute("MesErreurs", e.getMessage());
-			destinationPage = "Erreur";
 		}
-		destinationPage = "listerAdherent";
-		return new ModelAndView(destinationPage);
+		//return new RedirectView(String.valueOf(adherent == null) + "><");
+		return new RedirectView("listerAdherent.htm");
 	}
 
 	@RequestMapping(value = "ajouterAdherent.htm")
