@@ -12,11 +12,10 @@
 </head>
 <body>
 	<div class="container">
-		<A class="btn btn-info" href="index.htm" role="button">Retour Accueil</A>
-		<P align="center">
-			<FONT face="Arial" size="5" color="#004080"><U> <STRONG>Listing&nbsp;des
-				Adhérents </STRONG></U></FONT>
-		</P>
+		<a class="btn btn-info" href="index.htm" role="button">Retour Accueil</a>
+		<p align="center">
+			 Listing&nbsp;des Adhérents
+		</p>
 
 		<table class="table table-hover" BORDER="1">
 			<tr>
@@ -25,7 +24,6 @@
 				<th>Prénom</th>
 				<th>Ville</th>
 				<th>Actions</th>
-
 			</tr>
 
 			<c:forEach items="${mesAdherents}" var="item">
@@ -36,7 +34,7 @@
 					<td>${item.villeAdherent}</td>
 					<td>
                         <form action="supprimerAdherent.htm" method="post">
-                            <a class="btn btn-info" href="#" role="button"><span class="glyphicon glyphicon-pencil"></span>Modifier</a>
+                            <a class="btn btn-info" href="modifierAdherent.htm?id=${item.idAdherent}" role="button"><span class="glyphicon glyphicon-pencil"></span>Modifier</a>
                             <input type="hidden" name="id" value="${item.idAdherent}"/>
                             <button type="submit" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-remove-circle"></span>Supprimer</button>
                         </form>
@@ -45,6 +43,5 @@
 			</c:forEach>
 		</table>
 	</div>
-
 </body>
 </html>

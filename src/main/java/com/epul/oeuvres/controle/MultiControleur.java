@@ -77,6 +77,41 @@ public class MultiControleur {
 		return new ModelAndView(destinationPage);
 	}
 
+	@RequestMapping(value = "modifierAdherent.htm")
+	public ModelAndView afficherAdherent(HttpServletRequest request, HttpServletResponse response) {
+        String destinationPage = "";
+        try {
+            // HttpSession session = request.getSession();
+            Service unService = new Service();
+            request.setAttribute("adherent", unService.adherentById(Integer.parseInt(request.getParameter("id"))));
+            destinationPage = "modifierAdherent";
+        } catch (MonException e) {
+            request.setAttribute("MesErreurs", e.getMessage());
+            destinationPage = "Erreur";
+
+        }
+        return new ModelAndView(destinationPage);
+    }
+
+	@RequestMapping(value = "updateAdherent.htm")
+	public RedirectView updateAdherent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		String destinationPage = "";
+		try {
+            Service unService = new Service();
+            AdherentEntity unAdherent = unService.adherentById(Integer.parseInt(request.getParameter("id")));
+            unAdherent.setNomAdherent(request.getParameter("nom"));
+            unAdherent.setPrenomAdherent(request.getParameter("prenom"));
+            unAdherent.setVilleAdherent(request.getParameter("ville"));
+			unService.updateAdherent(unAdherent);
+		} catch (Exception e) {
+			request.setAttribute("MesErreurs", e.getMessage());
+			destinationPage = "Erreur";
+		}
+		destinationPage = "home";
+        return new RedirectView("listerAdherent.htm");
+	}
+
 	@RequestMapping(value = "supprimerAdherent.htm", method = RequestMethod.POST)
 	public RedirectView supprimerAdherent(HttpServletRequest request, HttpServletResponse response, @RequestParam("id") int id) throws Exception {
 

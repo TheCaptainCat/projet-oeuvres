@@ -30,6 +30,23 @@ public class Service extends EntityService{
 		}
 	}
 
+	public void updateAdherent(AdherentEntity unAdherent) throws MonException {
+		try
+		{
+			EntityTransaction transac = startTransaction();
+			transac.begin();
+			entitymanager.merge(unAdherent);
+			transac.commit();
+			entitymanager.close();
+		}
+		catch (RuntimeException e)
+		{
+			throw(new MonException("Erreur de lecture", e.getMessage()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/* Lister les adherents
 	 * */
 	public List<AdherentEntity> consulterListeAdherents() throws MonException {
