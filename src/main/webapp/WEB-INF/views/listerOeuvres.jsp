@@ -33,7 +33,7 @@
                 <td>${item.proprietaire.prenomProprietaire} ${item.proprietaire.nomProprietaire}</td>
                 <td>${item.etatOeuvrevente == 'L' ? 'Disponible' : 'Réservée'}</td>
                 <td>
-                    <a class="btn btn-info" href="#" role="button"><span class="glyphicon glyphicon-pencil"></span>Modifier</a>
+                    <a class="btn btn-info" href="modifierOeuvre.htm?id=${item.idOeuvrevente}" role="button"><span class="glyphicon glyphicon-pencil"></span>Modifier</a>
                 </td>
             </tr>
         </c:forEach>
