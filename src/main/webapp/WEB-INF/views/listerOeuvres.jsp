@@ -22,6 +22,7 @@
             <th>Titre</th>
             <th>Prix</th>
             <th>Propriétaire</th>
+            <th>Etat</th>
             <th>Actions</th>
         </tr>
 
@@ -29,7 +30,8 @@
             <tr>
                 <td>${item.titreOeuvrevente}</td>
                 <td>${item.prixOeuvrevente}</td>
-                <td>TODO</td>
+                <td>${item.proprietaire.prenomProprietaire} ${item.proprietaire.nomProprietaire}</td>
+                <td>${item.etatOeuvrevente == 'L' ? 'Disponible' : 'Réservée'}</td>
                 <td>
                     <a class="btn btn-info" href="#" role="button"><span class="glyphicon glyphicon-pencil"></span>Modifier</a>
                 </td>

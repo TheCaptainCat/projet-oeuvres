@@ -12,6 +12,7 @@ public class OeuvreventeEntity {
     private String titreOeuvrevente;
     private String etatOeuvrevente;
     private double prixOeuvrevente;
+    private ProprietaireEntity proprietaire;
 
     @Id
     @Column(name = "id_oeuvrevente")
@@ -80,5 +81,15 @@ public class OeuvreventeEntity {
         temp = Double.doubleToLongBits(prixOeuvrevente);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "id_proprietaire", referencedColumnName = "id_proprietaire", nullable = false)
+    public ProprietaireEntity getProprietaire() {
+        return proprietaire;
+    }
+
+    public void setProprietaire(ProprietaireEntity proprietaire) {
+        this.proprietaire = proprietaire;
     }
 }
