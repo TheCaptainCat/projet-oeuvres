@@ -1,21 +1,37 @@
 package com.epul.oeuvres.controle;
 
 //import javax.servlet.ServletContext;
-
-import com.epul.oeuvres.dao.Service;
-import com.epul.oeuvres.meserreurs.MonException;
-import com.epul.oeuvres.metier.AdherentEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 //import com.epul.metier.*;
 //import com.epul.meserreurs.*;
+
+
+
+import com.epul.oeuvres.dao.Service;
+import com.epul.oeuvres.meserreurs.*;
+import com.epul.oeuvres.metier.*;
+
+
+
+
+
+
+
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.view.RedirectView;
+
+
+import java.util.*;
 
 ///
 /// Les méthode du contrôleur répondent à des sollicitations
@@ -96,7 +112,7 @@ public class MultiControleur {
     @RequestMapping(value = "updateAdherent.htm")
     public RedirectView updateAdherent(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        String destinationPage = "";
+        String destinationPage = "listerAdherent.htm";
         try {
             Service unService = new Service();
             AdherentEntity unAdherent = unService.adherentById(Integer.parseInt(request.getParameter("id")));
@@ -108,8 +124,44 @@ public class MultiControleur {
             request.setAttribute("MesErreurs", e.getMessage());
             destinationPage = "Erreur";
         }
-        destinationPage = "home";
-        return new RedirectView("listerAdherent.htm");
+
+        return new RedirectView(destinationPage);
+    }
+
+    @RequestMapping(value = "modifierOeuvre.htm")
+    public ModelAndView afficherOeuvre(HttpServletRequest request, HttpServletResponse response) {
+        String destinationPage = "";
+        try {
+            // HttpSession session = request.getSession();
+            Service unService = new Service();
+            request.setAttribute("oeuvre", unService.oeuvreById(Integer.parseInt(request.getParameter("id"))));
+            request.setAttribute("proprietaires", unService.consulterListeProprietaires());
+            destinationPage = "modifierOeuvre";
+        } catch (MonException e) {
+            request.setAttribute("MesErreurs", e.getMessage());
+            destinationPage = "Erreur";
+
+        }
+        return new ModelAndView(destinationPage);
+    }
+
+    @RequestMapping(value = "updateOeuvre.htm")
+    public RedirectView updateOeuvre(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        String destinationPage = "listerOeuvres.htm";
+        try {
+            Service unService = new Service();
+            OeuvreventeEntity oeuvre = unService.oeuvreById(Integer.parseInt(request.getParameter("id")));
+            oeuvre.setPrixOeuvrevente(Float.parseFloat(request.getParameter("prix")));
+            oeuvre.setTitreOeuvrevente(request.getParameter("titre"));
+            oeuvre.setProprietaire(unService.proprietaireById(Integer.parseInt(request.getParameter("proprietaire"))));
+            unService.updateOeuvre(oeuvre);
+        } catch (Exception e) {
+            request.setAttribute("MesErreurs", e.getMessage());
+            destinationPage = "Erreur";
+        }
+
+        return new RedirectView(destinationPage);
     }
 
     @RequestMapping(value = "supprimerAdherent.htm")
@@ -155,7 +207,6 @@ public class MultiControleur {
     public ModelAndView Afficheindex2(HttpServletRequest request, HttpServletResponse response) throws Exception {
         return new ModelAndView("home");
     }
-
     // /
     // / Affichage de la page d'accueil
     // /
@@ -163,4 +214,7 @@ public class MultiControleur {
     public ModelAndView AfficheErreur(HttpServletRequest request, HttpServletResponse response) throws Exception {
         return new ModelAndView("Erreur");
     }
+
+
+
 }

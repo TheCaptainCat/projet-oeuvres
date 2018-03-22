@@ -47,6 +47,23 @@ public class Service extends EntityService{
 		}
 	}
 
+    public void updateOeuvre(OeuvreventeEntity oeuvre) throws MonException {
+        try
+        {
+            EntityTransaction transac = startTransaction();
+            transac.begin();
+            entitymanager.merge(oeuvre);
+            transac.commit();
+            entitymanager.close();
+        }
+        catch (RuntimeException e)
+        {
+            throw(new MonException("Erreur de lecture", e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 	/* Lister les adherents
 	 * */
 	public List<AdherentEntity> consulterListeAdherents() throws MonException {
@@ -85,6 +102,24 @@ public class Service extends EntityService{
         return oeuvres;
     }
 
+    public List<ProprietaireEntity> consulterListeProprietaires() throws MonException {
+        List<ProprietaireEntity> proprietaires = null;
+        try
+        {
+            EntityTransaction transac = startTransaction();
+            transac.begin();
+            proprietaires = (List<ProprietaireEntity>)entitymanager.createQuery("SELECT p FROM ProprietaireEntity p").getResultList();
+            entitymanager.close();
+        }
+        catch (RuntimeException e)
+        {
+            new MonException("Erreur de lecture", e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return proprietaires;
+    }
+
 	/* Consultation d'une adherent par son numéro
 	*/
 	public AdherentEntity adherentById(int numero) throws MonException {
@@ -103,6 +138,40 @@ public class Service extends EntityService{
 		}
 		return adherents.get(0);
 	}
+
+    public OeuvreventeEntity oeuvreById(int numero) throws MonException {
+        List<OeuvreventeEntity> oeuvres = null;
+        try {
+            EntityTransaction transac = startTransaction();
+            transac.begin();
+
+            oeuvres = (List<OeuvreventeEntity>)entitymanager.createQuery("SELECT o FROM OeuvreventeEntity o WHERE o.idOeuvrevente = " + numero).getResultList();
+            entitymanager.close();
+        }catch (RuntimeException e)
+        {
+            new MonException("Erreur de lecture", e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return oeuvres.get(0);
+    }
+
+    public ProprietaireEntity proprietaireById(int numero) throws MonException {
+        List<ProprietaireEntity> proprietaires = null;
+        try {
+            EntityTransaction transac = startTransaction();
+            transac.begin();
+
+            proprietaires = (List<ProprietaireEntity>)entitymanager.createQuery("SELECT p FROM ProprietaireEntity p WHERE p.idProprietaire = " + numero).getResultList();
+            entitymanager.close();
+        }catch (RuntimeException e)
+        {
+            new MonException("Erreur de lecture", e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return proprietaires.get(0);
+    }
 
     public void deleteAdherent(int numero) throws MonException {
         try {
