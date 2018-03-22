@@ -112,13 +112,13 @@ public class MultiControleur {
         return new RedirectView("listerAdherent.htm");
 	}
 
-	@RequestMapping(value = "supprimerAdherent.htm", method = RequestMethod.POST)
-	public RedirectView supprimerAdherent(HttpServletRequest request, HttpServletResponse response, @RequestParam("id") int id) throws Exception {
+	@RequestMapping(value = "supprimerAdherent.htm")
+	public RedirectView supprimerAdherent(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 	    AdherentEntity adherent = null;
 		try {
 		    Service service = new Service();
-			service.deleteAdherent(id);
+			service.deleteAdherent(Integer.parseInt(request.getParameter("id")));
 		} catch (Exception e) {
 			request.setAttribute("MesErreurs", e.getMessage());
 		}
