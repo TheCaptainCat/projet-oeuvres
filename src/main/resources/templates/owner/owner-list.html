@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout"
+      th:with="title='Liste des propriétaires'">
+
+<th:block layout:fragment="content">
+    <br>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th>Numéro</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Nombre d'oeuvres prêt</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="owner : ${owners}" th:attr="data-id=${owner.getId()}">
+            <td th:text="${owner.getId()}"></td>
+            <td th:text="${owner.getSurname()}"> </td>
+            <td th:text="${owner.getFirstname()}"></td>
+            <td th:text="${owner.getWorkForLending().size()}"></td>
+            <td>
+                <button th:attr="data-validate-button=${owner.getId()}" type="button" class="btn btn-success validateModificationsButton"
+                        th:onclick="'editOwner(\'' + ${owner.getId()} + '\');'">
+                    <i class="fa fa-check" style="color:white; font-size:1.5em;"></i>
+                </button>
+                <button th:attr="data-cancel-button=${owner.getId()}" type="button" class="btn btn-warning cancelModificationsButton"
+                        th:onclick="'setReadMode(\'' + ${owner.getId()} + '\');'">
+                    <i class="fa fa-times" style="color:white; font-size:1.5em;"></i>
+                </button>
+                <button th:attr="data-edit-button=${owner.getId()}" type="button" class="btn btn-warning" th:onclick="'setEditMode(\'' + ${owner.getId()} + '\');'">
+                    <i class="fa fa-pencil" style="color:white; font-size:1.5em;"></i>
+                </button>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirmationModal"
+                        th:attr="data-delete-button=${owner.getId()},data-owner-id=${owner.getId()},data-owner-surname=${owner.getSurname()},
+                        data-owner-firstname=${owner.getFirstname()}">
+                    <i class="fa fa-trash" style="color:white; font-size:1.5em;"></i>
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="modal fade" id="deleteConfirmationModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirmation de suppression</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous vraiment supprimer <span id="ownerName"></span> de la liste des propriétaires ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        <a id="deleteConfirmationLink" style="color:inherit" >Supprimer</a>
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</th:block>
+</html>
+
+<script type="text/javascript">
+    $('#deleteConfirmationModal').on('show.bs.modal', function (e) {
+        var ownerId = $(e.relatedTarget).data('owner-id');
+        var ownerSurname = $(e.relatedTarget).data('owner-surname');
+        var ownerFirstname = $(e.relatedTarget).data('owner-firstname');
+
+        document.getElementById("ownerName").innerHTML = ownerFirstname + ' ' + ownerSurname;
+
+        document.getElementById("deleteConfirmationLink").onclick = function () {
+            deleteOwner(ownerId);
+        };
+    });
+
+    function setEditMode(rowId) {
+
+        $('[data-validate-button=' + rowId + ']')[0].style.setProperty("display", "inline", "important");
+        $('[data-cancel-button=' + rowId + ']')[0].style.setProperty("display", "inline", "important");
+        $('[data-edit-button=' + rowId + ']')[0].style.display = "none";
+        $('[data-delete-button=' + rowId + ']')[0].style.display = "none";
+
+        var row = $('[data-id=' + rowId + ']')[0];
+
+        // Surname
+        var surname = row.children[1].innerText;
+        var surnameInput = document.createElement("INPUT");
+        surnameInput.setAttribute("id", "surname");
+        surnameInput.setAttribute("type", "text");
+        surnameInput.setAttribute("class", "form-control");
+        surnameInput.setAttribute("name", "surname");
+        surnameInput.setAttribute("value", surname);
+        surnameInput.dataset.current = surname;
+        var surnameTd = document.createElement("TD");
+        surnameTd.appendChild(surnameInput);
+        row.replaceChild(surnameTd, row.children[1]);
+
+        // Firstname
+        var firstname = row.children[2].innerText;
+        var firstnameInput = document.createElement("INPUT");
+        firstnameInput.setAttribute("id", "firstname");
+        firstnameInput.setAttribute("type", "text");
+        firstnameInput.setAttribute("class", "form-control");
+        firstnameInput.setAttribute("name", "firstname");
+        firstnameInput.setAttribute("value", firstname);
+        firstnameInput.dataset.current = firstname;
+        var firstNameTd = document.createElement("TD");
+        firstNameTd.appendChild(firstnameInput);
+        row.replaceChild(firstNameTd, row.children[2]);
+    }
+
+    function setReadMode(rowId) {
+
+        $('[data-validate-button=' + rowId + ']')[0].style.display = "none";
+        $('[data-cancel-button=' + rowId + ']')[0].style.display = "none";
+        $('[data-edit-button=' + rowId + ']')[0].style.setProperty("display", "inline", "important");
+        $('[data-delete-button=' + rowId + ']')[0].style.setProperty("display", "inline", "important");
+
+        var row = $('[data-id=' + rowId + ']')[0];
+
+        // Surname
+        var surname = row.children[1].firstChild.dataset.current;
+        var surnameTd = document.createElement("TD");
+        surnameTd.innerText = surname;
+        row.replaceChild(surnameTd, row.children[1]);
+
+        // Firstname
+        var firstname = row.children[2].firstChild.dataset.current;
+        var firstnameTd = document.createElement("TD");
+        firstnameTd.innerText = firstname;
+        row.replaceChild(firstnameTd, row.children[2]);
+    }
+
+    function editOwner(rowId){
+        var row = $('[data-id=' + rowId + ']')[0];
+
+        var surname = row.children[1].firstChild.value;
+        var firstname = row.children[2].firstChild.value;
+
+        var URL = "/owners/" + rowId;
+        var dataObject = { 'firstname': firstname, 'surname': surname};
+
+        $.ajax({
+            url: URL,
+            type: 'PUT',
+            data: dataObject,
+            dataType: 'json',
+            success: function(result) {
+                row.children[1].firstChild.dataset.current = surname;
+                row.children[2].firstChild.dataset.current = firstname;
+
+                setReadMode(rowId);
+            },
+            error : function(resultat){
+                setReadMode(rowId);
+            }
+        });
+    }
+
+    function deleteOwner(id) {
+        var URL = "/owners/" + id;
+
+        $.ajax({
+            url: URL,
+            type: 'DELETE',
+            success: function(result) {
+                var row = $('[data-id=' + id + ']')[0];
+                row.remove();
+            },
+            error : function(resultat){
+            }
+        });
+    }
+
+</script>

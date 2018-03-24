@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout"
+      th:with="title='Liste des propriétaires'">
+
+<th:block layout:fragment="content">
+    <br>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th>Numéro</th>
+            <th>Titre</th>
+            <th>Propriétaire</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="workForLending : ${worksforlending}" th:attr="data-id=${workForLending.getId()}">
+            <td th:text="${workForLending.getId()}"></td>
+            <td th:text="${workForLending.getTitle()}"> </td>
+            <td th:text="${workForLending.getOwner().getFirstname() + ' ' + workForLending.getOwner().getSurname()}"
+                th:attr="data-owner-id=${workForLending.getOwner().getId()}"></td>
+            <td>
+                <button th:attr="data-validate-button=${workForLending.getId()}" type="button" class="btn btn-success validateModificationsButton"
+                        th:onclick="'editWorkForLending(\'' + ${workForLending.getId()} + '\');'">
+                    <i class="fa fa-check" style="color:white; font-size:1.5em;"></i>
+                </button>
+                <button th:attr="data-cancel-button=${workForLending.getId()}" type="button" class="btn btn-warning cancelModificationsButton"
+                        th:onclick="'setReadMode(\'' + ${workForLending.getId()} + '\');'">
+                    <i class="fa fa-times" style="color:white; font-size:1.5em;"></i>
+                </button>
+                <button th:attr="data-edit-button=${workForLending.getId()}" type="button" class="btn btn-warning" th:onclick="'setEditMode(\'' + ${workForLending.getId()} + '\');'">
+                    <i class="fa fa-pencil" style="color:white; font-size:1.5em;"></i>
+                </button>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirmationModal"
+                        th:attr="data-delete-button=${workForLending.getId()},data-workforlending-id=${workForLending.getId()},data-workforlending-title=${workForLending.getTitle()}">
+                    <i class="fa fa-trash" style="color:white; font-size:1.5em;"></i>
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="modal fade" id="deleteConfirmationModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirmation de suppression</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous vraiment supprimer <span id="workForLendingName"></span> de la liste des oeuvres prêt ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        <a id="deleteConfirmationLink" style="color:inherit" >Supprimer</a>
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</th:block>
+</html>
+
+<script type="text/javascript">
+    $('#deleteConfirmationModal').on('show.bs.modal', function (e) {
+        var workForLendingId = $(e.relatedTarget).data('workforlending-id');
+        var workForLendingTitle = $(e.relatedTarget).data('workforlending-title');
+
+        document.getElementById("workForLendingName").innerHTML = ''  + workForLendingTitle;
+
+        document.getElementById("deleteConfirmationLink").onclick = function () {
+            deleteWorkForLending(workForLendingId);
+        };
+    });
+
+    function setEditMode(rowId) {
+
+        $('[data-validate-button=' + rowId + ']')[0].style.setProperty("display", "inline", "important");
+        $('[data-cancel-button=' + rowId + ']')[0].style.setProperty("display", "inline", "important");
+        $('[data-edit-button=' + rowId + ']')[0].style.display = "none";
+        $('[data-delete-button=' + rowId + ']')[0].style.display = "none";
+
+        var row = $('[data-id=' + rowId + ']')[0];
+
+        // Title
+        var title = row.children[1].innerText;
+        var titleInput = document.createElement("INPUT");
+        titleInput.setAttribute("class", "form-control");
+        titleInput.setAttribute("name", "title");
+        titleInput.setAttribute("value", title);
+        titleInput.dataset.current = title;
+        var titleTd = document.createElement("TD");
+        titleTd.appendChild(titleInput);
+        row.replaceChild(titleTd, row.children[1]);
+
+        // Owner
+        var ownerId = row.children[2].dataset.ownerId;
+        var ownerSelect = document.createElement("SELECT");
+        ownerSelect.setAttribute("class", "form-control");
+        ownerSelect.dataset.current = row.children[2].innerText;
+        ownerSelect.dataset.ownerId = ownerId;
+
+        var URL = "/owners/all";
+
+        $.ajax({
+            url: URL,
+            type: 'GET',
+            success: function(result) {
+                result.forEach(function(element) {
+                    var option = document.createElement("OPTION");
+                    option.innerText = element.firstname + ' ' + element.surname;
+                    option.setAttribute("value", element.id);
+                    ownerSelect.appendChild(option);
+                });
+
+                ownerSelect.value = ownerId;
+                var ownerTd = document.createElement("TD");
+                ownerTd.appendChild(ownerSelect)
+                row.replaceChild(ownerTd, row.children[2]);
+            },
+            error : function(resultat){
+            }
+        });
+    }
+
+    function setReadMode(rowId) {
+
+        $('[data-validate-button=' + rowId + ']')[0].style.display = "none";
+        $('[data-cancel-button=' + rowId + ']')[0].style.display = "none";
+        $('[data-edit-button=' + rowId + ']')[0].style.setProperty("display", "inline", "important");
+        $('[data-delete-button=' + rowId + ']')[0].style.setProperty("display", "inline", "important");
+
+        var row = $('[data-id=' + rowId + ']')[0];
+
+        // Surname
+        var surname = row.children[1].firstChild.dataset.current;
+        var surnameTd = document.createElement("TD");
+        surnameTd.innerText = surname;
+        row.replaceChild(surnameTd, row.children[1]);
+
+        // Owner
+        var owner = row.children[2].firstChild.dataset.current;
+        var ownerTd = document.createElement("TD");
+        ownerTd.innerText = owner;
+        ownerTd.dataset.ownerId = row.children[2].firstChild.dataset.ownerId;
+        row.replaceChild(ownerTd, row.children[2]);
+    }
+
+    function editWorkForLending(rowId){
+        var row = $('[data-id=' + rowId + ']')[0];
+
+        var title = row.children[1].firstChild.value;
+        var ownerId = row.children[2].firstChild.value;
+        var ownerName = row.children[2].firstChild.innerText;
+
+        console.log(title);
+        console.log(ownerId);
+
+        var URL = "/worksforlending/" + rowId;
+        var dataObject = { 'title': title, 'ownerId': ownerId};
+
+        $.ajax({
+            url: URL,
+            type: 'PUT',
+            data: dataObject,
+            dataType: 'json',
+            success: function(result) {
+                row.children[1].firstChild.dataset.current = title;
+                row.children[2].firstChild.dataset.current = row.children[2].firstChild.options[row.children[2].firstChild.selectedIndex].text;
+
+                setReadMode(rowId);
+            },
+            error : function(resultat){
+                setReadMode(rowId);
+            }
+        });
+    }
+
+    function deleteWorkForLending(id) {
+        var URL = "/worksforlending/" + id;
+
+        $.ajax({
+            url: URL,
+            type: 'DELETE',
+            success: function(result) {
+                var row = $('[data-id=' + id + ']')[0];
+                row.remove();
+            },
+            error : function(resultat){
+            }
+        });
+    }
+
+</script>
