@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout"
+      th:with="title='Ajouter un propriétaire'">
+<th:block layout:fragment="content">
+    <div class="form-group">
+        <label for="firstname">Prénom</label>
+        <input id="firstname" type="text" class="form-control" name="firstname"/>
+    </div>
+
+    <div class="form-group">
+        <label for="surname">Nom</label>
+        <input id="surname" type="text" class="form-control" name="surname"/>
+    </div>
+
+    <button class="btn btn-success" onclick="submit()">Ajouter le propriétaire</button>
+</th:block>
+</html>
+
+
+<script type="text/javascript">
+
+    function submit(){
+
+        var surname = document.getElementById("surname").value;
+        var firstname = document.getElementById("firstname").value;
+
+        var URL = "/owners";
+
+        var dataObject = { 'firstname': firstname, 'surname': surname};
+
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            data: dataObject,
+            dataType: 'json',
+            success: function(result) {
+                location.href = URL;
+            },
+            error : function(resultat){
+
+            }
+        });
+    }
+
+</script>
