@@ -24,8 +24,7 @@
             <td th:text="${booking.getAdherent().getFirstname() + ' ' + booking.getAdherent().getSurname()}"
                 th:attr="data-adherent-id=${booking.getAdherent().getId()}"></td>
             <td th:text="${booking.getBookingDate()}"></td>
-            <td th:text="${booking.getFormatedStatus()}"
-                th:attr="data-status=${booking.getStatus()}"></td>
+            <td th:text="${booking.getStatus()}"></td>
             <td>
                 <button th:attr="data-validate-button=${booking.getWorkForSale().getId() + '-' + booking.getAdherent().getId()}"
                         type="button" class="btn btn-success validateModificationsButton"
@@ -115,23 +114,13 @@
         row.replaceChild(dateTd, row.children[2]);
 
         // Status
-        var status = row.children[3].dataset.status;
-        var statusInput = document.createElement("SELECT");
-        statusInput.setAttribute("id", "status");
+        var status = row.children[3].innerText;
+        var statusInput = document.createElement("INPUT");
+        statusInput.setAttribute("id", "surname");
+        statusInput.setAttribute("type", "text");
         statusInput.setAttribute("class", "form-control");
         statusInput.setAttribute("name", "status");
-
-        var option = document.createElement("OPTION");
-        option.innerText = 'En attente';
-        option.setAttribute("value", 'pending');
-        statusInput.appendChild(option);
-
-        option = document.createElement("OPTION");
-        option.innerText = 'Confirmé';
-        option.setAttribute("value", 'confirmed');
-        statusInput.appendChild(option);
-
-        statusInput.value = status;
+        statusInput.setAttribute("value", status);
         statusInput.dataset.current = status;
         var statusTd = document.createElement("TD");
         statusTd.appendChild(statusInput);
@@ -157,7 +146,6 @@
         var status = row.children[3].firstChild.dataset.current;
         var statusTd = document.createElement("TD");
         statusTd.innerText = status;
-        statusTd.dataset.status = row.children[3].firstChild.dataset.status;
         row.replaceChild(statusTd, row.children[3]);
     }
 
@@ -171,14 +159,6 @@
         var bookingDate = row.children[2].firstChild.value;
         var status = row.children[3].firstChild.value;
 
-        var ok = true;
-        if (bookingDate === "") {
-            row.children[2].firstChild.classList.add('is-invalid');
-            ok = false;
-        }
-        if (!ok)
-            return;
-
         var URL = "/bookings/" + adherentId + "/" + workForSaleId;
         var dataObject = {'bookingDate': bookingDate, 'status': status};
 
@@ -189,8 +169,7 @@
             dataType: 'json',
             success: function (result) {
                 row.children[2].firstChild.dataset.current = bookingDate;
-                row.children[3].firstChild.dataset.current = status === "pending" ? "En attente" : status === "confirmed" ? "Confirmé" : "Indéterminé";
-                row.children[3].firstChild.dataset.status = status;
+                row.children[3].firstChild.dataset.current = status;
                 setReadMode(rowId);
             },
             error: function (resultat) {
