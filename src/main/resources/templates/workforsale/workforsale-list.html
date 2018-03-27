@@ -199,6 +199,18 @@
         var state = row.children[3].innerText;
         var ownerId = row.children[4].firstChild.value;
 
+        var ok = true;
+        if (title === "") {
+            row.children[1].firstChild.classList.add('is-invalid');
+            ok = false;
+        }
+        if (price === "" || isNaN(parseFloat(price))) {
+            row.children[2].firstChild.classList.add('is-invalid');
+            ok = false;
+        }
+        if (!ok)
+            return;
+
         var URL = "/worksforsale/" + rowId;
         var dataObject = { 'title': title, 'price': price, 'state': state, 'ownerId': ownerId};
 

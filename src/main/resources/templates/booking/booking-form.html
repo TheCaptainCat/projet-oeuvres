@@ -28,7 +28,10 @@
     <div class="form-group">
 
         <label for="status">Statut</label>
-        <input id="status" type="text" class="form-control">
+        <select id="status" class="form-control">
+            <option th:value="pending">En attente</option>
+            <option th:value="confirmed">Confirmé</option>
+        </select>
     </div>
 
     <button class="btn btn-success" onclick="submit()">Réserver l'oeuvre</button>
@@ -44,6 +47,14 @@
         var adherentId = document.getElementById("adherent").value;
         var bookingDate = document.getElementById("bookingDate").value;
         var status = document.getElementById("status").value;
+
+        var ok = true;
+        if (bookingDate === "") {
+            document.getElementById("bookingDate").classList.add('is-invalid');
+            ok = false;
+        }
+        if (!ok)
+            return;
 
         var URL = "/bookings";
 

@@ -164,6 +164,22 @@
         var firstname = row.children[2].firstChild.value;
         var city = row.children[3].firstChild.value;
 
+        var ok = true;
+        if (surname === "") {
+            row.children[1].firstChild.classList.add('is-invalid');
+            ok = false;
+        }
+        if (firstname === "") {
+            row.children[2].firstChild.classList.add('is-invalid');
+            ok = false;
+        }
+        if (city === "") {
+            row.children[3].firstChild.classList.add('is-invalid');
+            ok = false;
+        }
+        if (!ok)
+            return;
+
         var URL = "/adherents/" + rowId;
         var dataObject = { 'firstname': firstname, 'surname': surname, 'city': city };
 

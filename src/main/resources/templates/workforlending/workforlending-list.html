@@ -159,6 +159,14 @@
         var URL = "/worksforlending/" + rowId;
         var dataObject = { 'title': title, 'ownerId': ownerId};
 
+        var ok = true;
+        if (title === "") {
+            row.children[1].firstChild.classList.add('is-invalid');
+            ok = false;
+        }
+        if (!ok)
+            return;
+
         $.ajax({
             url: URL,
             type: 'PUT',

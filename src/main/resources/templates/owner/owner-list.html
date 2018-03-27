@@ -149,6 +149,18 @@
         var URL = "/owners/" + rowId;
         var dataObject = { 'firstname': firstname, 'surname': surname};
 
+        var ok = true;
+        if (surname === "") {
+            row.children[1].firstChild.classList.add('is-invalid');
+            ok = false;
+        }
+        if (firstname === "") {
+            row.children[2].firstChild.classList.add('is-invalid');
+            ok = false;
+        }
+        if (!ok)
+            return;
+
         $.ajax({
             url: URL,
             type: 'PUT',

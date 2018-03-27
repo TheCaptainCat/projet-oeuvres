@@ -7,6 +7,9 @@
     <div class="form-group">
         <label for="title">Titre</label>
         <input id="title" type="text" class="form-control" name="title"/>
+        <div class="invalid-feedback">
+            Veuillez renseigner ce champ.
+        </div>
     </div>
 
     <div class="form-group">
@@ -28,6 +31,14 @@
 
         var title = document.getElementById("title").value;
         var ownerId = document.getElementById("owner").value;
+
+        var ok = true;
+        if (title === "") {
+            document.getElementById("title").classList.add('is-invalid');
+            ok = false;
+        }
+        if (!ok)
+            return;
 
         var URL = "/worksforlending";
         var dataObject = {'title': title, 'ownerId': ownerId};

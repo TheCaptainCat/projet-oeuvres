@@ -62,6 +62,10 @@ public class Booking implements Serializable{
         return status;
     }
 
+    public String getFormatedStatus() {
+        return status.equals("pending") ? "En attente" : status.equals("confirmed") ? "Confirmé" : "Indéterminé";
+    }
+
     public void setStatus(String status) {
         this.status = status;
     }
