@@ -1,10 +1,12 @@
 package com.cgp.projetoeuvres.controller;
 
-import com.cgp.projetoeuvres.entity.*;
+import com.cgp.projetoeuvres.entity.Adherent;
+import com.cgp.projetoeuvres.entity.Booking;
+import com.cgp.projetoeuvres.entity.BookingKey;
+import com.cgp.projetoeuvres.entity.WorkForSale;
 import com.cgp.projetoeuvres.exception.ResourceNotFoundException;
 import com.cgp.projetoeuvres.repository.AdherentRepository;
 import com.cgp.projetoeuvres.repository.BookingRepository;
-import com.cgp.projetoeuvres.repository.OwnerRepository;
 import com.cgp.projetoeuvres.repository.WorkForSaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,8 +17,7 @@ import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/bookings")
@@ -42,7 +43,7 @@ public class BookingController {
 
     @RequestMapping("/add")
     public String displayAddForm(Model model) {
-        model.addAttribute("worksforsale", workForSaleRepository.findAll());
+        model.addAttribute("worksforsale", workForSaleRepository.findAll().stream().filter(w -> w.getState().equals("L")).collect(Collectors.toList()));
         model.addAttribute("adherents", adherentRepository.findAll());
         return "booking/booking-form";
     }
@@ -93,7 +94,9 @@ public class BookingController {
         booking.setStatus(status);
 
         workForSale.setState("R");
-        workForSaleRepository.save(workForSale);
+        WorkForSale work = workForSaleRepository.save(workForSale);
+
+        booking.setWorkForSale(work);
 
         return bookingRepository.save(booking);
     }
