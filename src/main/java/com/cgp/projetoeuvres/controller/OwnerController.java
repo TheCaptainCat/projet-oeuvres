@@ -1,9 +1,7 @@
 package com.cgp.projetoeuvres.controller;
 
-import com.cgp.projetoeuvres.entity.Adherent;
 import com.cgp.projetoeuvres.entity.Owner;
 import com.cgp.projetoeuvres.exception.ResourceNotFoundException;
-import com.cgp.projetoeuvres.repository.AdherentRepository;
 import com.cgp.projetoeuvres.repository.OwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

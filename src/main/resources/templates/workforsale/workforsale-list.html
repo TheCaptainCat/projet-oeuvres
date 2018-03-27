@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layout"
-      th:with="title='Liste des propriétaires'">
+      th:with="title='Liste des oeuvres ventes'">
 
 <th:block layout:fragment="content">
     <br>
@@ -11,30 +11,34 @@
         <tr>
             <th>Numéro</th>
             <th>Titre</th>
+            <th>Prix</th>
+            <th>Etat</th>
             <th>Propriétaire</th>
             <th>Actions</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="workForLending : ${worksforlending}" th:attr="data-id=${workForLending.getId()}">
-            <td th:text="${workForLending.getId()}"></td>
-            <td th:text="${workForLending.getTitle()}"> </td>
-            <td th:text="${workForLending.getOwner().getFirstname() + ' ' + workForLending.getOwner().getSurname()}"
-                th:attr="data-owner-id=${workForLending.getOwner().getId()}"></td>
+        <tr th:each="workforsale : ${worksforsale}" th:attr="data-id=${workforsale.getId()}">
+            <td th:text="${workforsale.getId()}"></td>
+            <td th:text="${workforsale.getTitle()}"> </td>
+            <td th:text="${workforsale.getPrice()}"> </td>
+            <td th:text="${workforsale.getState()}"> </td>
+            <td th:text="${workforsale.getOwner().getFirstname() + ' ' + workforsale.getOwner().getSurname()}"
+                th:attr="data-owner-id=${workforsale.getOwner().getId()}"></td>
             <td>
-                <button th:attr="data-validate-button=${workForLending.getId()}" type="button" class="btn btn-success validateModificationsButton"
-                        th:onclick="'editWorkForLending(\'' + ${workForLending.getId()} + '\');'">
+                <button th:attr="data-validate-button=${workforsale.getId()}" type="button" class="btn btn-success validateModificationsButton"
+                        th:onclick="'editWorkForSale(\'' + ${workforsale.getId()} + '\');'">
                     <i class="fa fa-check" style="color:white; font-size:1.5em;"></i>
                 </button>
-                <button th:attr="data-cancel-button=${workForLending.getId()}" type="button" class="btn btn-warning cancelModificationsButton"
-                        th:onclick="'setReadMode(\'' + ${workForLending.getId()} + '\');'">
+                <button th:attr="data-cancel-button=${workforsale.getId()}" type="button" class="btn btn-warning cancelModificationsButton"
+                        th:onclick="'setReadMode(\'' + ${workforsale.getId()} + '\');'">
                     <i class="fa fa-times" style="color:white; font-size:1.5em;"></i>
                 </button>
-                <button th:attr="data-edit-button=${workForLending.getId()}" type="button" class="btn btn-warning" th:onclick="'setEditMode(\'' + ${workForLending.getId()} + '\');'">
+                <button th:attr="data-edit-button=${workforsale.getId()}" type="button" class="btn btn-warning" th:onclick="'setEditMode(\'' + ${workforsale.getId()} + '\');'">
                     <i class="fa fa-pencil" style="color:white; font-size:1.5em;"></i>
                 </button>
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirmationModal"
-                        th:attr="data-delete-button=${workForLending.getId()},data-workforlending-id=${workForLending.getId()},data-workforlending-title=${workForLending.getTitle()}">
+                        th:attr="data-delete-button=${workforsale.getId()},data-workforsale-id=${workforsale.getId()},data-workforsale-title=${workforsale.getTitle()}">
                     <i class="fa fa-trash" style="color:white; font-size:1.5em;"></i>
                 </button>
             </td>
@@ -50,7 +54,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p>Voulez-vous vraiment supprimer <span id="workForLendingName"></span> de la liste des oeuvres prêt ?</p>
+                    <p>Voulez-vous vraiment supprimer <span id="workForSaleName"></span> de la liste des oeuvres vente ?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">
@@ -67,13 +71,13 @@
 
 <script type="text/javascript">
     $('#deleteConfirmationModal').on('show.bs.modal', function (e) {
-        var workForLendingId = $(e.relatedTarget).data('workforlending-id');
-        var workForLendingTitle = $(e.relatedTarget).data('workforlending-title');
+        var workForSaleId = $(e.relatedTarget).data('workforsale-id');
+        var workForSaleTitle = $(e.relatedTarget).data('workforsale-title');
 
-        document.getElementById("workForLendingName").innerHTML = ''  + workForLendingTitle;
+        document.getElementById("workForSaleName").innerHTML = ''  + workForSaleTitle;
 
         document.getElementById("deleteConfirmationLink").onclick = function () {
-            deleteWorkForLending(workForLendingId);
+            deleteWorkForSale(workForSaleId);
         };
     });
 
@@ -97,11 +101,36 @@
         titleTd.appendChild(titleInput);
         row.replaceChild(titleTd, row.children[1]);
 
+        // Price
+        var price = row.children[2].innerText;
+        var priceInput = document.createElement("INPUT");
+        priceInput.setAttribute("class", "form-control");
+        priceInput.setAttribute("name", "price");
+        priceInput.setAttribute("value", price);
+        priceInput.setAttribute("type", "number");
+        priceInput.setAttribute("min", "0");
+        priceInput.setAttribute("step", "1");
+        priceInput.dataset.current = price;
+        var priceTd = document.createElement("TD");
+        priceTd.appendChild(priceInput);
+        row.replaceChild(priceTd, row.children[2]);
+
+        // // State
+        // var state = row.children[3].innerText;
+        // var stateInput = document.createElement("INPUT");
+        // stateInput.setAttribute("class", "form-control");
+        // stateInput.setAttribute("name", "state");
+        // stateInput.setAttribute("value", state);
+        // stateInput.dataset.current = state;
+        // var stateTd = document.createElement("TD");
+        // stateTd.appendChild(stateInput);
+        // row.replaceChild(stateTd, row.children[3]);
+
         // Owner
-        var ownerId = row.children[2].dataset.ownerId;
+        var ownerId = row.children[4].dataset.ownerId;
         var ownerSelect = document.createElement("SELECT");
         ownerSelect.setAttribute("class", "form-control");
-        ownerSelect.dataset.current = row.children[2].innerText;
+        ownerSelect.dataset.current = row.children[4].innerText;
         ownerSelect.dataset.ownerId = ownerId;
 
         var URL = "/owners/all";
@@ -120,7 +149,7 @@
                 ownerSelect.value = ownerId;
                 var ownerTd = document.createElement("TD");
                 ownerTd.appendChild(ownerSelect)
-                row.replaceChild(ownerTd, row.children[2]);
+                row.replaceChild(ownerTd, row.children[4]);
             },
             error : function(resultat){
             }
@@ -136,28 +165,42 @@
 
         var row = $('[data-id=' + rowId + ']')[0];
 
-        // Surname
-        var surname = row.children[1].firstChild.dataset.current;
-        var surnameTd = document.createElement("TD");
-        surnameTd.innerText = surname;
-        row.replaceChild(surnameTd, row.children[1]);
+        // Title
+        var title = row.children[1].firstChild.dataset.current;
+        var titleTd = document.createElement("TD");
+        titleTd.innerText = title;
+        row.replaceChild(titleTd, row.children[1]);
+
+        // Price
+        var price = row.children[2].firstChild.dataset.current;
+        var priceTd = document.createElement("TD");
+        priceTd.innerText = price;
+        row.replaceChild(priceTd, row.children[2]);
+
+        // // State
+        // var state = row.children[3].firstChild.dataset.current;
+        // var stateTd = document.createElement("TD");
+        // stateTd.innerText = state;
+        // row.replaceChild(stateTd, row.children[3]);
 
         // Owner
-        var owner = row.children[2].firstChild.dataset.current;
+        var owner = row.children[4].firstChild.dataset.current;
         var ownerTd = document.createElement("TD");
         ownerTd.innerText = owner;
-        ownerTd.dataset.ownerId = row.children[2].firstChild.dataset.ownerId;
-        row.replaceChild(ownerTd, row.children[2]);
+        ownerTd.dataset.ownerId = row.children[4].firstChild.dataset.ownerId;
+        row.replaceChild(ownerTd, row.children[4]);
     }
 
-    function editWorkForLending(rowId){
+    function editWorkForSale(rowId){
         var row = $('[data-id=' + rowId + ']')[0];
 
         var title = row.children[1].firstChild.value;
-        var ownerId = row.children[2].firstChild.value;
+        var price = row.children[2].firstChild.value;
+        var state = row.children[3].innerText;
+        var ownerId = row.children[4].firstChild.value;
 
-        var URL = "/worksforlending/" + rowId;
-        var dataObject = { 'title': title, 'ownerId': ownerId};
+        var URL = "/worksforsale/" + rowId;
+        var dataObject = { 'title': title, 'price': price, 'state': state, 'ownerId': ownerId};
 
         $.ajax({
             url: URL,
@@ -166,7 +209,8 @@
             dataType: 'json',
             success: function(result) {
                 row.children[1].firstChild.dataset.current = title;
-                row.children[2].firstChild.dataset.current = row.children[2].firstChild.options[row.children[2].firstChild.selectedIndex].text;
+                row.children[2].firstChild.dataset.current = price;
+                row.children[4].firstChild.dataset.current = row.children[4].firstChild.options[row.children[4].firstChild.selectedIndex].text;
 
                 setReadMode(rowId);
             },
@@ -176,8 +220,8 @@
         });
     }
 
-    function deleteWorkForLending(id) {
-        var URL = "/worksforlending/" + id;
+    function deleteWorkForSale(id) {
+        var URL = "/worksforsale/" + id;
 
         $.ajax({
             url: URL,

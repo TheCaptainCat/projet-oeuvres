@@ -17,8 +17,12 @@ public class Owner {
     @Column(name = "prenom_proprietaire")
     private String firstname;
     @OneToMany(mappedBy="owner", cascade= {CascadeType.PERSIST, CascadeType.REMOVE})
-    @JsonManagedReference // Pour éviter une récursion lors de la conversion en JSON
-    private List<WorkForLending> workForLending;
+    @JsonManagedReference
+    private List<WorkForLending> worksForLending;
+    @OneToMany(mappedBy="owner", cascade= {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JsonManagedReference
+    private List<WorkForSale> worksForSale;
+
 
     public int getId() {
         return id;
@@ -44,16 +48,28 @@ public class Owner {
         this.firstname = prenom;
     }
 
-    public List<WorkForLending> getWorkForLending() {
-        return workForLending;
+    public List<WorkForLending> getWorksForLending() {
+        return worksForLending;
     }
 
     public void addWorkForLending(WorkForLending workForLending) {
-        this.workForLending.add(workForLending);
+        this.worksForLending.add(workForLending);
         if (workForLending.getOwner() != this) {
             workForLending.setOwner(this);
         }
     }
+
+    public List<WorkForSale> getWorksForSale() {
+        return worksForSale;
+    }
+
+    public void addWorkForSale(WorkForSale workForSale) {
+        this.worksForSale.add(workForSale);
+        if (workForSale.getOwner() != this) {
+            workForSale.setOwner(this);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

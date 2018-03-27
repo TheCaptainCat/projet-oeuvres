@@ -13,6 +13,7 @@
             <th>Nom</th>
             <th>Prénom</th>
             <th>Nombre d'oeuvres prêt</th>
+            <th>Nombre d'oeuvres vente</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -21,7 +22,8 @@
             <td th:text="${owner.getId()}"></td>
             <td th:text="${owner.getSurname()}"> </td>
             <td th:text="${owner.getFirstname()}"></td>
-            <td th:text="${owner.getWorkForLending().size()}"></td>
+            <td th:text="${owner.getWorksForLending().size()}"></td>
+            <td th:text="${owner.getWorksForSale().size()}"></td>
             <td>
                 <button th:attr="data-validate-button=${owner.getId()}" type="button" class="btn btn-success validateModificationsButton"
                         th:onclick="'editOwner(\'' + ${owner.getId()} + '\');'">

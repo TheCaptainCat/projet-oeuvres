@@ -39,8 +39,8 @@ public class WorkForLending {
 
     public void setOwner(Owner owner) {
         this.owner = owner;
-        if (!owner.getWorkForLending().contains(this)) {
-            owner.getWorkForLending().add(this);
+        if (!owner.getWorksForLending().contains(this)) {
+            owner.getWorksForLending().add(this);
         }
     }
 

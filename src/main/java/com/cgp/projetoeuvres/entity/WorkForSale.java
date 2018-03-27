@@ -1,9 +1,10 @@
 package com.cgp.projetoeuvres.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "oeuvrevente", schema = "baseoeuvre", catalog = "")
@@ -17,6 +18,13 @@ public class WorkForSale {
     private String state;
     @Column(name = "prix_oeuvrevente")
     private double price;
+    @OneToMany(mappedBy="workForSale", cascade= {CascadeType.MERGE, CascadeType.REMOVE})
+    @JsonManagedReference
+    private List<Booking> bookings;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JsonBackReference // Pour éviter une récursion lors de la conversion en JSON
+    @JoinColumn(name="id_proprietaire")
+    private Owner owner;
 
     public int getId() {
         return id;
@@ -48,6 +56,28 @@ public class WorkForSale {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+        if (!owner.getWorksForSale().contains(this)) {
+            owner.getWorksForSale().add(this);
+        }
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void addBooking(Booking booking) {
+        this.bookings.add(booking);
+        if (booking.getWorkForSale() != this) {
+            booking.setWorkForSale(this);
+        }
     }
 
     @Override

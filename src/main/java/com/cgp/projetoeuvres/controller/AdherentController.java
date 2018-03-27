@@ -1,12 +1,15 @@
 package com.cgp.projetoeuvres.controller;
 
 import com.cgp.projetoeuvres.entity.Adherent;
+import com.cgp.projetoeuvres.entity.Owner;
 import com.cgp.projetoeuvres.exception.ResourceNotFoundException;
 import com.cgp.projetoeuvres.repository.AdherentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/adherents")
@@ -23,6 +26,12 @@ public class AdherentController {
     public String findAllAdherents(Model model){
         model.addAttribute("adherents", adherentRepository.findAll());
         return "adherent/adherent-list";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value="/all")
+    public @ResponseBody
+    List<Adherent> getAll(){
+        return adherentRepository.findAll();
     }
 
     @RequestMapping("/add")

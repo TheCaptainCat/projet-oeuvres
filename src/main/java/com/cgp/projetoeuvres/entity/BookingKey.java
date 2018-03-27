@@ -1,16 +1,26 @@
 package com.cgp.projetoeuvres.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import javax.persistence.*;
 import java.io.Serializable;
 
 public class BookingKey implements Serializable {
+
     @Id
     @Column(name = "id_oeuvrevente", insertable = false, updatable = false)
     private int workForSaleId;
     @Id
     @Column(name = "id_adherent", insertable = false, updatable = false)
     private int adherentId;
+
+    public BookingKey() {
+    }
+
+    public BookingKey(int workForSaleId, int adherentId) {
+        this.workForSaleId = workForSaleId;
+        this.adherentId = adherentId;
+    }
 
     public int getWorkForSaleId() {
         return workForSaleId;

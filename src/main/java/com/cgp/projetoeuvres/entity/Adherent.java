@@ -1,6 +1,9 @@
 package com.cgp.projetoeuvres.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "adherent", schema = "baseoeuvre", catalog = "")
@@ -16,7 +19,9 @@ public class Adherent {
     private String firstname;
     @Column(name = "ville_adherent")
     private String city;
-
+    @OneToMany(mappedBy="adherent", cascade= {CascadeType.MERGE, CascadeType.REMOVE})
+    @JsonManagedReference
+    private List<Booking> bookings;
 
     public int getId() {
         return id;
@@ -48,6 +53,17 @@ public class Adherent {
 
     public void setCity(String ville) {
         this.city = ville;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void addBooking(Booking booking) {
+        this.bookings.add(booking);
+        if (booking.getAdherent() != this) {
+            booking.setAdherent(this);
+        }
     }
 
     @Override
