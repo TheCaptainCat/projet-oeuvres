@@ -29,11 +29,7 @@
         var title = document.getElementById("title").value;
         var ownerId = document.getElementById("owner").value;
 
-        console.log(title);
-        console.log(ownerId);
-
         var URL = "/worksforlending";
-
         var dataObject = {'title': title, 'ownerId': ownerId};
 
         $.ajax({

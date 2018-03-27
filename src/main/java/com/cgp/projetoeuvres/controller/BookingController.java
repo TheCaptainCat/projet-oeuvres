@@ -63,6 +63,11 @@ public class BookingController {
         booking.setWorkForSale(workForSale);
         booking.setAdherent(adherent);
 
+        workForSale.setState("R");
+        WorkForSale work = workForSaleRepository.save(workForSale);
+
+        booking.setWorkForSale(work);
+
         return bookingRepository.save(booking);
     }
 
@@ -71,9 +76,6 @@ public class BookingController {
     Booking updateBooking(@PathVariable(value = "adherentId") String adherentId,
                           @PathVariable(value = "workForSaleId") String workForSaleId,
                           @RequestParam String bookingDate, @RequestParam String status) {
-
-        WorkForSale workForSale = workForSaleRepository.findById(Integer.valueOf(workForSaleId)).orElseThrow(()
-                -> new ResourceNotFoundException("WorkForSale", "id", workForSaleId));
 
         BookingKey bookingKey = new BookingKey(Integer.valueOf(workForSaleId), Integer.valueOf(adherentId));
         Booking booking = bookingRepository.findById(bookingKey)
@@ -93,11 +95,6 @@ public class BookingController {
         booking.setBookingDate(parsedBookingDate);
         booking.setStatus(status);
 
-        workForSale.setState("R");
-        WorkForSale work = workForSaleRepository.save(workForSale);
-
-        booking.setWorkForSale(work);
-
         return bookingRepository.save(booking);
     }
 
@@ -116,6 +113,9 @@ public class BookingController {
         Booking booking = bookingRepository.findById(new BookingKey(workForSale.getId(), adherent.getId()))
                 .orElseThrow(() -> new ResourceNotFoundException("BookingKey", "workForSaleId - adherentId", workForSaleId + " - " + adherentId));
 
+
+        workForSale.setState("L");
+        WorkForSale work = workForSaleRepository.save(workForSale);
         bookingRepository.delete(booking);
 
         return booking;
