@@ -1,7 +1,5 @@
 package com.cgp.projetoeuvres.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import javax.persistence.*;
 import java.io.Serializable;
 

@@ -101,65 +101,6 @@
 
         var row = $('[data-id=' + rowId + ']')[0];
 
-
-        // WorkForSale
-        var workForSaleId = row.children[0].dataset.workforsaleId;
-        var workForSaleSelect = document.createElement("SELECT");
-        workForSaleSelect.setAttribute("class", "form-control");
-        workForSaleSelect.dataset.current = row.children[0].innerText;
-        workForSaleSelect.dataset.workforsaleId = workForSaleId;
-
-        var URL = "/worksforsale/all";
-
-        $.ajax({
-            url: URL,
-            type: 'GET',
-            success: function (result) {
-                result.forEach(function (element) {
-                    var option = document.createElement("OPTION");
-                    option.innerText = element.title;
-                    option.setAttribute("value", element.id);
-                    workForSaleSelect.appendChild(option);
-                });
-
-                workForSaleSelect.value = workForSaleId;
-                var workForSaleTd = document.createElement("TD");
-                workForSaleTd.appendChild(workForSaleSelect)
-                row.replaceChild(workForSaleTd, row.children[0]);
-            },
-            error: function (resultat) {
-            }
-        });
-
-        // Adherent
-        var adherentId = row.children[1].dataset.adherentId;
-        var adherentSelect = document.createElement("SELECT");
-        adherentSelect.setAttribute("class", "form-control");
-        adherentSelect.dataset.current = row.children[1].innerText;
-        adherentSelect.dataset.adherentId = adherentId;
-
-        var URL = "/adherents/all";
-
-        $.ajax({
-            url: URL,
-            type: 'GET',
-            success: function (result) {
-                result.forEach(function (element) {
-                    var option = document.createElement("OPTION");
-                    option.innerText = element.firstname + ' ' + element.surname;
-                    option.setAttribute("value", element.id);
-                    adherentSelect.appendChild(option);
-                });
-
-                adherentSelect.value = adherentId;
-                var adherentTd = document.createElement("TD");
-                adherentTd.appendChild(adherentSelect)
-                row.replaceChild(adherentTd, row.children[1]);
-            },
-            error: function (resultat) {
-            }
-        });
-
         // Date
         var date = row.children[2].innerText;
         var dateInput = document.createElement("INPUT");
@@ -195,20 +136,6 @@
 
         var row = $('[data-id=' + rowId + ']')[0];
 
-        // WorkForSale
-        var workForSale = row.children[0].firstChild.dataset.current;
-        var workForSaleTd = document.createElement("TD");
-        workForSaleTd.innerText = workForSale;
-        workForSaleTd.dataset.workforsaleId = row.children[0].firstChild.dataset.workforsaleId;
-        row.replaceChild(workForSaleTd, row.children[0]);
-
-        // Adherent
-        var adherent = row.children[1].firstChild.dataset.current;
-        var adherentTd = document.createElement("TD");
-        adherentTd.innerText = adherent;
-        adherentTd.dataset.adherentId = row.children[1].firstChild.dataset.adherentId;
-        row.replaceChild(adherentTd, row.children[1]);
-
         // Title
         var date = row.children[2].firstChild.dataset.current;
         var dateTd = document.createElement("TD");
@@ -225,8 +152,10 @@
     function editBooking(rowId) {
         var row = $('[data-id=' + rowId + ']')[0];
 
-        var workForSaleId = row.children[0].firstChild.value;
-        var adherentId = row.children[1].firstChild.value;
+        var splittedRow = rowId.split("-");
+
+        var workForSaleId = splittedRow[0];
+        var adherentId = splittedRow[1];
         var bookingDate = row.children[2].firstChild.value;
         var status = row.children[3].firstChild.value;
 
@@ -239,8 +168,6 @@
             data: dataObject,
             dataType: 'json',
             success: function (result) {
-                row.children[0].firstChild.dataset.current = row.children[0].firstChild.options[row.children[0].firstChild.selectedIndex].text;
-                row.children[1].firstChild.dataset.current = row.children[1].firstChild.options[row.children[1].firstChild.selectedIndex].text;
                 row.children[2].firstChild.dataset.current = bookingDate;
                 row.children[3].firstChild.dataset.current = status;
                 setReadMode(rowId);
