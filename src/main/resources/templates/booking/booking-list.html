@@ -104,9 +104,9 @@
         // Date
         var date = row.children[2].innerText;
         var dateInput = document.createElement("INPUT");
-        dateInput.setAttribute("class", "form-control");
+        dateInput.setAttribute("class", "form-control bookingDate");
         dateInput.setAttribute("name", "date");
-        dateInput.setAttribute("type", "date");
+        dateInput.setAttribute("type", "text");
         dateInput.setAttribute("value", date);
         dateInput.dataset.current = date;
         var dateTd = document.createElement("TD");
