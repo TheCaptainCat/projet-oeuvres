@@ -31,3 +31,11 @@
     width: 40%;
     margin: 20px auto;
 }
+
+i {
+    cursor: pointer;
+}
+
+.sortableHeader{
+    cursor: pointer;
+}

@@ -5,14 +5,15 @@
       th:with="title='Liste des réservations'">
 
 <th:block layout:fragment="content">
-    <input id="searchInput" type="text" class="form-control" name="searchInput"  onkeyup="filter()" placeholder="Rechercher une réservation"/>
+    <input id="searchInput" type="text" class="form-control" name="searchInput" onkeyup="filter()"
+           placeholder="Rechercher une réservation"/>
     <table class="table table-striped" id="bookingTable">
         <thead class="thead-dark">
         <tr>
-            <th>Oeuvre vente</th>
-            <th>Adhérent</th>
-            <th>Date</th>
-            <th>Statut</th>
+            <th class="sortableHeader" onclick="sort(0)">Oeuvre vente  <i class="fa fa-sort"></i></th>
+            <th class="sortableHeader" onclick="sort(1)">Adhérent  <i class="fa fa-sort"></i></th>
+            <th class="sortableHeader" onclick="sort(2)">Date  <i class="fa fa-sort"></i></th>
+            <th class="sortableHeader" onclick="sort(3)">Statut  <i class="fa fa-sort"></i></th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -228,16 +229,16 @@
             if (tds.length > 0) {
 
                 var displayed = false;
-                for(j = 0; j < tds.length - 1; j++){
+                for (j = 0; j < tds.length - 1; j++) {
                     td = tr[i].getElementsByTagName("td")[j];
-                    if(td){
+                    if (td) {
                         if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
                             displayed = true;
                         }
                     }
                 }
 
-                if(displayed)
+                if (displayed)
                     tr[i].style.display = "";
                 else
                     tr[i].style.display = "none";
@@ -246,4 +247,43 @@
         }
     }
 
+    function sort(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("bookingTable");
+        switching = true;
+        dir = "asc";
+
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+
+                if (dir == "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount++;
+            } else {
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
 </script>
