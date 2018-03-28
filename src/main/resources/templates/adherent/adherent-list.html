@@ -5,8 +5,8 @@
       th:with="title='Liste des adhérents'">
 
 <th:block layout:fragment="content">
-    <br>
-    <table class="table table-striped">
+    <input id="searchInput" type="text" class="form-control" name="searchInput"  onkeyup="filter()" placeholder="Rechercher un adhérent"/>
+    <table class="table table-striped" id="adherentTable">
         <thead class="thead-dark">
         <tr>
             <th>Numéro</th>
@@ -155,6 +155,8 @@
         var cityTd = document.createElement("TD");
         cityTd.innerText = city;
         row.replaceChild(cityTd, row.children[3]);
+
+        filter();
     }
 
     function editAdherent(rowId){
@@ -199,6 +201,8 @@
                 setReadMode(rowId);
             }
         });
+
+
     }
 
     function deleteAdherent(id) {
@@ -214,6 +218,36 @@
             error : function(resultat){
             }
         });
+    }
+
+    function filter() {
+        var searchInput, filter, table, tr, td, i;
+        searchInput = document.getElementById("searchInput");
+        filter = searchInput.value.toUpperCase();
+        table = document.getElementById("adherentTable");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            tds = tr[i].getElementsByTagName("td");
+            if (tds.length > 0) {
+
+                var displayed = false;
+                for(j = 0; j < tds.length - 1; j++){
+                    td = tr[i].getElementsByTagName("td")[j];
+                    if(td){
+                        if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                            displayed = true;
+                        }
+                    }
+                }
+
+                if(displayed)
+                    tr[i].style.display = "";
+                else
+                    tr[i].style.display = "none";
+
+            }
+        }
     }
 
 </script>

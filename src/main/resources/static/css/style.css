@@ -26,3 +26,8 @@
 .cancelModificationsButton{
     display: none!important;
 }
+
+#searchInput {
+    width: 40%;
+    margin: 20px auto;
+}

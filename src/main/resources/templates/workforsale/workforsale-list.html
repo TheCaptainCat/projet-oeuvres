@@ -5,8 +5,8 @@
       th:with="title='Liste des oeuvres ventes'">
 
 <th:block layout:fragment="content">
-    <br>
-    <table class="table table-striped">
+    <input id="searchInput" type="text" class="form-control" name="searchInput"  onkeyup="filter()" placeholder="Rechercher une oeuvre vente"/>
+    <table class="table table-striped"  id="workForSaleTable">
         <thead class="thead-dark">
         <tr>
             <th>Numéro</th>
@@ -115,17 +115,6 @@
         priceTd.appendChild(priceInput);
         row.replaceChild(priceTd, row.children[2]);
 
-        // // State
-        // var state = row.children[3].innerText;
-        // var stateInput = document.createElement("INPUT");
-        // stateInput.setAttribute("class", "form-control");
-        // stateInput.setAttribute("name", "state");
-        // stateInput.setAttribute("value", state);
-        // stateInput.dataset.current = state;
-        // var stateTd = document.createElement("TD");
-        // stateTd.appendChild(stateInput);
-        // row.replaceChild(stateTd, row.children[3]);
-
         // Owner
         var ownerId = row.children[4].dataset.ownerId;
         var ownerSelect = document.createElement("SELECT");
@@ -177,18 +166,14 @@
         priceTd.innerText = price;
         row.replaceChild(priceTd, row.children[2]);
 
-        // // State
-        // var state = row.children[3].firstChild.dataset.current;
-        // var stateTd = document.createElement("TD");
-        // stateTd.innerText = state;
-        // row.replaceChild(stateTd, row.children[3]);
-
         // Owner
         var owner = row.children[4].firstChild.dataset.current;
         var ownerTd = document.createElement("TD");
         ownerTd.innerText = owner;
         ownerTd.dataset.ownerId = row.children[4].firstChild.dataset.ownerId;
         row.replaceChild(ownerTd, row.children[4]);
+
+        filter();
     }
 
     function editWorkForSale(rowId){
@@ -245,6 +230,36 @@
             error : function(resultat){
             }
         });
+    }
+
+    function filter() {
+        var searchInput, filter, table, tr, td, i;
+        searchInput = document.getElementById("searchInput");
+        filter = searchInput.value.toUpperCase();
+        table = document.getElementById("workForSaleTable");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            tds = tr[i].getElementsByTagName("td");
+            if (tds.length > 0) {
+
+                var displayed = false;
+                for(j = 0; j < tds.length - 1; j++){
+                    td = tr[i].getElementsByTagName("td")[j];
+                    if(td){
+                        if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                            displayed = true;
+                        }
+                    }
+                }
+
+                if(displayed)
+                    tr[i].style.display = "";
+                else
+                    tr[i].style.display = "none";
+
+            }
+        }
     }
 
 </script>
